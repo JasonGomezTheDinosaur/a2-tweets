@@ -53,19 +53,21 @@ class Tweet {
         return this.text;
     }
 
-    // use writtentext to look for the word after the words "mi" or "km"
     get activityType(): string {
         if (this.source != 'completed_event') {
             return "unknown";
         }
 
-                const match = this.text.match(/(\d+\.?\d*)\s*(km|mi)/i)
+        const pattern = new RegExp(`\\b${"completed a"}\\s+(\\w+)`, 'i'); // Looks for phrase "completed a" to find activity type
+        const match = this.text.match(pattern);
+        if (match) {
+            return match[1];
+        }
 
         //TODO: parse the activity type from the text of the tweet
-        return "";
+        return "unknown";
     }
 
-    // use writtentext to look for the num after the word "a"
     get distance(): number {
         if (this.source != 'completed_event') {
             return 0;
@@ -77,12 +79,45 @@ class Tweet {
         if (match) {
             return Number(parseFloat(match[1]));
         }
-       
+
         return 0;
     }
 
     getHTMLTableRow(rowNumber: number): string {
         //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
-        return "<tr></tr>";
+
+        const urlMatch = this.text.match(/https?:\/\/[^\s]+/i);
+        let url = '#';
+
+        if (urlMatch) {
+            url = urlMatch[0];
+        }
+
+        // determines what to display form tweet, and shortens it with ... if it's too long
+        let displayText = this.text;
+        const maxLength = 60;
+        if (displayText.length > maxLength) {
+            displayText = displayText.substring(0, maxLength) + '...';
+        }
+
+        // creates a clickable link
+
+        let linkText;
+        if (url !== '#') {
+            linkText = `<a href="${url}" target="_blank" rel="noopener noreferrer">${displayText}</a>`;
+        } else {
+            linkText = displayText;
+        }
+
+        // uses rowNumber to create unique ID's and add row number column
+        const rowHTML = `
+        <tr id="tweet-row-${rowNumber}">
+            <td>${rowNumber + 1}</td>
+            <td>${this.source}</td>
+            <td>${linkText}</td>
+        </tr>
+    `;
+
+        return rowHTML;
     }
 }

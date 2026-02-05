@@ -18,10 +18,13 @@ https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
 https://www.geeksforgeeks.org/javascript/get-the-first-and-last-item-in-an-array-using-javascript/
 https://www.rexegg.com/regex-quickstart.php
 https://www.geeksforgeeks.org/typescript/typescript-string-match-method/
+https://developer.mozilla.org/en-US/docs/Web/API/Element/input_event
+https://vega.github.io/vega-lite/examples/
 
 Query To AI:
 
 how to find if a specific word appears anywhere in text typescript
+how to find word after a two-word phrase in typescript
 
 
 4. What classmates or other individuals did you consult as part of this assignment? What did you discuss?
