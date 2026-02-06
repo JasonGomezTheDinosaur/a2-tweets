@@ -15,7 +15,7 @@ class Tweet {
     // anything not fitting into above is misc
 
     get source(): string {
-        if (/completed/i.test(this.text)) {
+        if (/completed/i.test(this.text) || /posted/i.test(this.text)) {
             return "completed_event"
         }
 
@@ -37,7 +37,7 @@ class Tweet {
     // else true
 
     get written(): boolean {
-        if (/@Runkeeper/i.test(this.text)) {
+        if (/Check it out!/i.test(this.text)) {
             return false;
         }
 
@@ -58,7 +58,7 @@ class Tweet {
             return "unknown";
         }
 
-        const pattern = new RegExp(`\\b${"completed a"}\\s+(\\w+)`, 'i'); // Looks for phrase "completed a" to find activity type
+        const pattern = new RegExp(`\\b${"completed a"}\\s+(\\w+)`, 'i'); // looks for phrase "completed a" to find activity type
         const match = this.text.match(pattern);
         if (match) {
             return match[1];
@@ -77,7 +77,12 @@ class Tweet {
         const match = this.text.match(/(\d+\.?\d*)\s*(km|mi)/i)
 
         if (match) {
-            return Number(parseFloat(match[1]));
+            const num = parseFloat(match[1]);
+            const unit = match[2].toLowerCase();
+            if (unit === 'km') {
+                return num * 0.621371;
+            }
+            return num
         }
 
         return 0;
