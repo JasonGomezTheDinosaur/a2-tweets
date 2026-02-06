@@ -16,8 +16,8 @@ function parseTweets(runkeeper_tweets) {
 
 	const allTweetTimes = tweet_array.map(tweet => tweet.time);
 
-	const firstTweetTime = allTweetTimes.at(0);
-	const lastTweetTime = allTweetTimes.at(allTweetTimes.length - 1);
+	const lastTweetTime = allTweetTimes.at(0);
+	const firstTweetTime = allTweetTimes.at(allTweetTimes.length - 1);
 
 	const earliestDate = firstTweetTime.toLocaleDateString('en-US', {
 		weekday: 'long',

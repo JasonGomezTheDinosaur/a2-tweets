@@ -50,103 +50,103 @@ function parseTweets(runkeeper_tweets) {
 		}
 	}
 
-)};
-
+	)
+};
 //TODO: create the visualizations which group the three most-tweeted activities by the day of the week.
 //Use those visualizations to answer the questions about which activities tended to be longest and when.
 
-	const activityCount = {
-		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-		"description": "Number of Tweets by Activity Type",
-		"data": {
-			"values": activityCountArray
+const activityCount = {
+	"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+	"description": "Number of Tweets by Activity Type",
+	"data": {
+		"values": activityCountArray
+	},
+	"mark": "bar",  //bar type of mark
+	"encoding": {
+		"x": {
+			"field": "activity",
+			"type": "nominal",
+			"title": "Activity Type",
+			"sort": "-y"  //descending order instead of +y for ascending
 		},
-		"mark": "bar",  //bar type of mark
-		"encoding": {
-			"x": {
-				"field": "activity",
-				"type": "nominal",
-				"title": "Activity Type",
-				"sort": "-y"  //descending order instead of +y for ascending
-			},
-			"y": {
-				"field": "count",
-				"type": "quantitative",
-				"title": "Number of Tweets"
-			}
+		"y": {
+			"field": "count",
+			"type": "quantitative",
+			"title": "Number of Tweets"
 		}
-	};
+	}
+};
 
-	vegaEmbed('#activityVis', activityCount, { actions: false });
+vegaEmbed('#activityVis', activityCount, { actions: false });
 
-	const distancePoints = {
-		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-		"description": "Distance by Day of Week (Individual Points)",
-		"data": {
-			"values": distanceArray
+const distancePoints = {
+	"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+	"description": "Distance by Day of Week (Individual Points)",
+	"data": {
+		"values": distanceArray
+	},
+	"mark": {
+		"type": "point",
+		"size": 60,
+		"opacity": 0.6 // point transparency
+	},
+	"encoding": {
+		"x": {
+			"field": "day",
+			"type": "ordinal",
+			"title": "Day of Week",
+			"sort": ["Sunday", "Monday", "Tuesday", "Wednesday",
+				"Thursday", "Friday", "Saturday"]
 		},
-		"mark": {
-			"type": "point",
-			"size": 60,
-			"opacity": 0.6 // point transparency
+		"y": {
+			"field": "distance",
+			"type": "quantitative",
+			"title": "Distance (miles/km)"
 		},
-		"encoding": {
-			"x": {
-				"field": "day",
-				"type": "ordinal",
-				"title": "Day of Week",
-				"sort": ["Sunday", "Monday", "Tuesday", "Wednesday",
-					"Thursday", "Friday", "Saturday"]
-			},
-			"y": {
-				"field": "distance",
-				"type": "quantitative",
-				"title": "Distance (miles/km)"
-			},
-			"color": {
-				"field": "activity",
-				"type": "nominal",
-				"title": "Activity Type"
-			},
-		}
-	};
-
-	const distancePointsAggr = {
-		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-		"description": "Distance by Day of Week (Individual Points)",
-		"data": {
-			"values": distanceArray
+		"color": {
+			"field": "activity",
+			"type": "nominal",
+			"title": "Activity Type"
 		},
-		"mark": {
-			"type": "point",
-			"size": 60,
-			"opacity": 0.6 // point transparency
+	}
+};
+
+const distancePointsAggr = {
+	"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+	"description": "Distance by Day of Week (Individual Points)",
+	"data": {
+		"values": distanceArray
+	},
+	"mark": {
+		"type": "point",
+		"size": 60,
+		"opacity": 0.6 // point transparency
+	},
+	"encoding": {
+		"x": {
+			"field": "day",
+			"type": "ordinal",
+			"title": "Day of Week",
+			"sort": ["Sunday", "Monday", "Tuesday", "Wednesday",
+				"Thursday", "Friday", "Saturday"]
 		},
-		"encoding": {
-			"x": {
-				"field": "day",
-				"type": "ordinal",
-				"title": "Day of Week",
-				"sort": ["Sunday", "Monday", "Tuesday", "Wednesday",
-					"Thursday", "Friday", "Saturday"]
-			},
-			"y": {
-				"aggregate": "mean",
-				"field": "distance",
-				"type": "quantitative",
-				"title": "Distance (miles/km)"
-			},
-			"color": {
-				"field": "activity",
-				"type": "nominal",
-				"title": "Activity Type"
-			},
-		}
-	};
+		"y": {
+			"aggregate": "mean",
+			"field": "distance",
+			"type": "quantitative",
+			"title": "Distance (miles/km)"
+		},
+		"color": {
+			"field": "activity",
+			"type": "nominal",
+			"title": "Activity Type"
+		},
+	}
+};
 
 
 
-	//Wait for the DOM to load
-	document.addEventListener('DOMContentLoaded', function (event) {
-		loadSavedRunkeeperTweets().then(parseTweets);
-	});
+//Wait for the DOM to load
+document.addEventListener('DOMContentLoaded', function (event) {
+	loadSavedRunkeeperTweets().then(parseTweets);
+});
