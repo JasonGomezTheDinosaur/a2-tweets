@@ -1,41 +1,152 @@
 function parseTweets(runkeeper_tweets) {
 	//Do not proceed if no tweets loaded
-	if(runkeeper_tweets === undefined) {
+	if (runkeeper_tweets === undefined) {
 		window.alert('No tweets returned');
 		return;
 	}
-	
-	tweet_array = runkeeper_tweets.map(function(tweet) {
+
+	tweet_array = runkeeper_tweets.map(function (tweet) {
 		return new Tweet(tweet.text, tweet.created_at);
 	});
 
 	//TODO: create a new array or manipulate tweet_array to create a graph of the number of tweets containing each type of activity.
+	const activityCounts = tweet_array.reduce((counts, tweet) => {
+		const activity = tweet.activityType;
+		if (activity && activity !== "unknown") {
+			counts[activity] = (counts[activity] || 0) + 1;
+		}
+		return counts;
+	}, {});
 
-	activity_vis_spec = {
-	  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-	  "description": "A graph of the number of Tweets containing each type of activity.",
-	  "data": {
-	    "values": tweet_array
-	  },
-	  //TODO: Add mark and encoding
+	const activityCountArray = Object.keys(activityCounts).map(activity => ({ // convert to an array
+		activity: activity,
+		count: activityCounts[activity]
+	}));
 
-	  
-		"mark": "bar",
+	const topActivities = activityCountArray
+		.sort((a, b) => b.count - a.count) // sort from 1st to last activites
+		.slice(0, 3) // take only first 3 activities
+		.map(item => item.activity); //extract names of activities
+
+
+	const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+	const distanceArray = [];
+
+	tweet_array.forEach(tweet => {
+		const activity = tweet.activityType;
+		const distance = tweet.distance;
+
+		if (topActivities.includes(activity) && distance > 0 && activity !== "unknown") { //if activity is in top 3 + distance > 0 + activity is NOT unknown
+			const dayOfWeek = tweet.time.getDay();  // sets day of the week to a value from 0-6
+			const dayName = days[dayOfWeek];
+
+			distanceArray.push({
+				activity: activity,
+				day: dayName,
+				distance: distance,
+				date: tweet.time.toISOString().split('T')[0],
+				shortDay: dayName.substring(0, 3) //abbreviates to 3 letters, like mon or tue
+			});
+		}
+	}
+
+)};
+
+//TODO: create the visualizations which group the three most-tweeted activities by the day of the week.
+//Use those visualizations to answer the questions about which activities tended to be longest and when.
+
+	const activityCount = {
+		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+		"description": "Number of Tweets by Activity Type",
+		"data": {
+			"values": activityCountArray
+		},
+		"mark": "bar",  //bar type of mark
 		"encoding": {
-			"x": { "field": "activityType", "type": "qualitative", "title": "Activity Type"},
-			"y": { 
-				"aggregate": "count",
-				"title": "# of Tweets"
+			"x": {
+				"field": "activity",
+				"type": "nominal",
+				"title": "Activity Type",
+				"sort": "-y"  //descending order instead of +y for ascending
+			},
+			"y": {
+				"field": "count",
+				"type": "quantitative",
+				"title": "Number of Tweets"
 			}
 		}
 	};
-	vegaEmbed('#activityVis', activity_vis_spec, {actions:false});
 
-	//TODO: create the visualizations which group the three most-tweeted activities by the day of the week.
-	//Use those visualizations to answer the questions about which activities tended to be longest and when.
-}
+	vegaEmbed('#activityVis', activityCount, { actions: false });
 
-//Wait for the DOM to load
-document.addEventListener('DOMContentLoaded', function (event) {
-	loadSavedRunkeeperTweets().then(parseTweets);
-});
+	const distancePoints = {
+		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+		"description": "Distance by Day of Week (Individual Points)",
+		"data": {
+			"values": distanceArray
+		},
+		"mark": {
+			"type": "point",
+			"size": 60,
+			"opacity": 0.6 // point transparency
+		},
+		"encoding": {
+			"x": {
+				"field": "day",
+				"type": "ordinal",
+				"title": "Day of Week",
+				"sort": ["Sunday", "Monday", "Tuesday", "Wednesday",
+					"Thursday", "Friday", "Saturday"]
+			},
+			"y": {
+				"field": "distance",
+				"type": "quantitative",
+				"title": "Distance (miles/km)"
+			},
+			"color": {
+				"field": "activity",
+				"type": "nominal",
+				"title": "Activity Type"
+			},
+		}
+	};
+
+	const distancePointsAggr = {
+		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+		"description": "Distance by Day of Week (Individual Points)",
+		"data": {
+			"values": distanceArray
+		},
+		"mark": {
+			"type": "point",
+			"size": 60,
+			"opacity": 0.6 // point transparency
+		},
+		"encoding": {
+			"x": {
+				"field": "day",
+				"type": "ordinal",
+				"title": "Day of Week",
+				"sort": ["Sunday", "Monday", "Tuesday", "Wednesday",
+					"Thursday", "Friday", "Saturday"]
+			},
+			"y": {
+				"aggregate": "mean",
+				"field": "distance",
+				"type": "quantitative",
+				"title": "Distance (miles/km)"
+			},
+			"color": {
+				"field": "activity",
+				"type": "nominal",
+				"title": "Activity Type"
+			},
+		}
+	};
+
+
+
+	//Wait for the DOM to load
+	document.addEventListener('DOMContentLoaded', function (event) {
+		loadSavedRunkeeperTweets().then(parseTweets);
+	});

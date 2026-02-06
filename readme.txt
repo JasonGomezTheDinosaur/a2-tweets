@@ -20,6 +20,10 @@ https://www.rexegg.com/regex-quickstart.php
 https://www.geeksforgeeks.org/typescript/typescript-string-match-method/
 https://developer.mozilla.org/en-US/docs/Web/API/Element/input_event
 https://vega.github.io/vega-lite/examples/
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
+https://www.w3schools.com/jsref/jsref_getday.asp
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
 
 Query To AI:
 
