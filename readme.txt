@@ -24,6 +24,9 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
 https://www.w3schools.com/jsref/jsref_getday.asp
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+https://www.w3schools.com/js/js_switch.asp
+https://mathjs.org/docs/reference/functions/format.html
+https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
 
 Query To AI:
 

@@ -58,10 +58,10 @@ class Tweet {
             return "unknown";
         }
 
-        const pattern = new RegExp(`\\b${"completed a"}\\s+(\\w+)`, 'i'); // looks for phrase "completed a" to find activity type
+        const pattern = /(?:completed a|posted a)\s+\d+\.?\d*\s*(?:km|mi)\s+(\w+)/i;
         const match = this.text.match(pattern);
-        if (match) {
-            return match[1];
+        if (match && match[1]) {
+            return match[1].charAt(0).toUpperCase() + match[1].slice(1);
         }
 
         //TODO: parse the activity type from the text of the tweet
@@ -99,27 +99,35 @@ class Tweet {
         }
 
         // determines what to display form tweet, and shortens it with ... if it's too long
-        let displayText = this.text;
-        const maxLength = 60;
-        if (displayText.length > maxLength) {
-            displayText = displayText.substring(0, maxLength) + '...';
+        let beforeUrl = this.text;
+        let afterUrl = '';
+
+        if (urlMatch) {
+            url = urlMatch[0];
+            const urlIndex = this.text.indexOf(url);
+            beforeUrl = this.text.substring(0, urlIndex).trim();
+            afterUrl = this.text.substring(urlIndex + url.length).trim();
+
+            const maxLength = 100;
+            if (beforeUrl.length > maxLength) {
+                beforeUrl = beforeUrl.substring(0, maxLength) + '...';
+            }
         }
 
         // creates a clickable link
 
         let linkText;
         if (url !== '#') {
-            linkText = `<a href="${url}" target="_blank" rel="noopener noreferrer">${displayText}</a>`;
-        } else {
-            linkText = displayText;
+            linkText = `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
         }
 
+        const fullDisplay = `${beforeUrl} ${linkText} ${afterUrl}`;
         // uses rowNumber to create unique ID's and add row number column
         const rowHTML = `
         <tr id="tweet-row-${rowNumber}">
             <td>${rowNumber + 1}</td>
-            <td>${this.source}</td>
-            <td>${linkText}</td>
+            <td>${this.activityType}</td>
+            <td>${fullDisplay}</td>
         </tr>
     `;
 
