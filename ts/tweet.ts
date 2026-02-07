@@ -27,7 +27,6 @@ class Tweet {
             return "achievement"
         }
 
-        //TODO: identify whether the source is a live event, an achievement, a completed event, or miscellaneous.
         return "miscellaneous";
     }
 
@@ -41,7 +40,6 @@ class Tweet {
             return false;
         }
 
-        //TODO: identify whether the tweet is written
         return true;
     }
 
@@ -49,7 +47,6 @@ class Tweet {
         if (!this.written) {
             return "";
         }
-        //TODO: parse the written text from the tweet
         return this.text;
     }
 
@@ -85,7 +82,6 @@ class Tweet {
         if (this.source != 'completed_event') {
             return 0;
         }
-        //TODO: parse the distance from the text of the tweet
 
         const match = this.text.match(/(\d+\.?\d*)\s*(km|mi)/i)
 
@@ -102,7 +98,6 @@ class Tweet {
     }
 
     getHTMLTableRow(rowNumber: number): string {
-        //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
 
         const urlMatch = this.text.match(/https?:\/\/[^\s]+/i);
         let url = '#';

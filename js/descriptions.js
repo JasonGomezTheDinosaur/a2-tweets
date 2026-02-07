@@ -13,14 +13,12 @@ function parseTweets(runkeeper_tweets) {
 		return new Tweet(tweet.text, tweet.created_at);
 	});
 
-	//TODO: Filter to just the written tweets
 	writtenTweets = tweet_array.filter(tweet => tweet.written);
 
 }
 
 
 function addEventHandlerForSearch() {
-	//TODO: Search the written tweets as text is entered into the search box, and add them to the table
 	const searchInput = document.getElementById('textFilter');
 	const tableBody = document.getElementById('tweetTable');
 	const searchCountVar = document.getElementById('searchCount');
