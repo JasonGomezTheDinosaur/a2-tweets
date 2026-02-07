@@ -57,14 +57,27 @@ class Tweet {
         if (this.source != 'completed_event') {
             return "unknown";
         }
+        
 
-        const pattern = /(?:completed a|posted a)\s+\d+\.?\d*\s*(?:km|mi)\s+(\w+)/i;
-        const match = this.text.match(pattern);
-        if (match && match[1]) {
-            return match[1].charAt(0).toUpperCase() + match[1].slice(1);
+        const distancePattern = /(?:completed a|posted a)\s+\d+\.?\d*\s*(?:km|mi)\s+(\w+)/i;
+        const distanceMatch = this.text.match(distancePattern);
+        if (distanceMatch && distanceMatch[1]) {
+            return distanceMatch[1].charAt(0).toUpperCase() + distanceMatch[1].slice(1);
         }
 
-        //TODO: parse the activity type from the text of the tweet
+        const generalPattern = /(?:completed a|posted a)\s+([a-zA-Z\s]+?)(?:\s+with|\s+in\s+\d|$)/i;
+        const generalMatch = this.text.match(generalPattern);
+
+        if (generalMatch && generalMatch[1]) {
+            let activity = generalMatch[1].charAt(0).toUpperCase() + generalMatch[1].slice(1);
+
+            activity = activity.replace(/\s+\d+.*$/, '');
+            activity = activity.replace(/\s+workout$|\s+session$|\s+activity$/, '');
+
+            if (activity) {
+                return activity;
+            }
+        }
         return "unknown";
     }
 
@@ -78,7 +91,7 @@ class Tweet {
 
         if (match) {
             const num = parseFloat(match[1]);
-            const unit = match[2].toLowerCase();
+            const unit = match[2].charAt(0).toUpperCase() + match[2].slice(1);
             if (unit === 'km') {
                 return num * 0.621371;
             }
